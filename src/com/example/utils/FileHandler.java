@@ -13,10 +13,14 @@ public class FileHandler {
      * @return A list of lines of the file
      * @throws FileNotFoundException if the file specified does not exists on the system
      */
-    public static List<String> getFileContent(String fileName) throws FileNotFoundException {
+    public static List<String> getFileContent(String fileName) throws IOException {
+
+        File file = new File(fileName);
+
+        createFileIfNotThere(file);
 
         BufferedReader bufferedReader = new BufferedReader(
-                new FileReader(fileName)
+                new FileReader(file)
         );
 
         return bufferedReader.lines().collect(Collectors.toList());
@@ -30,6 +34,11 @@ public class FileHandler {
      * @throws IOException if an error occurs in the I/O
      */
     public static void appendToFile(String fileName, String text) throws IOException {
+
+        File file = new File(fileName);
+
+        createFileIfNotThere(file);
+
         PrintWriter printWriter = new PrintWriter(
                 new BufferedWriter(
                         new FileWriter(fileName, true)
@@ -37,5 +46,13 @@ public class FileHandler {
         );
 
         printWriter.println(text);
+    }
+
+    public static void createFileIfNotThere(File file) throws IOException {
+
+        //Check if the file exist and create it if not
+        if (!file.exists())
+            if (file.createNewFile())
+                System.out.println(file.getName() + " created");
     }
 }
