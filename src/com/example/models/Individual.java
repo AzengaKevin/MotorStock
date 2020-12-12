@@ -2,9 +2,17 @@ package com.example.models;
 
 public class Individual {
 
-    public static final String FILENAME = "individuals.txt";
+    public static final String FILENAME = "data/individuals.txt";
 
-    public enum Group {Supplier, Customer}
+    public enum Group {
+        Supplier, Customer;
+
+        public static Group fromString(String group) {
+            if (group.equalsIgnoreCase(Supplier.name())) return Supplier;
+            if (group.equalsIgnoreCase(Customer.name())) return Customer;
+            return null;
+        }
+    }
 
     private String id;
     private String name;
@@ -48,5 +56,37 @@ public class Individual {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s,%s,%s,%s", id, name, contact, group.toString());
+    }
+
+    public static Individual fromString(String individualString) {
+
+
+        String[] parts = individualString.split(",");
+
+        if (parts.length == 4) {
+
+            try {
+
+                String id = parts[0];
+                String name = parts[1];
+                String contact = parts[2];
+                Group group = Group.fromString(parts[3]);
+
+                return new Individual(id, name, contact, group);
+
+
+            } catch (Exception exception) {
+                System.err.println("Individual Error: " + exception.getLocalizedMessage());
+
+            }
+
+        }
+
+        return null;
     }
 }

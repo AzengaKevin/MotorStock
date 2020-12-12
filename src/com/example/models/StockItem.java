@@ -1,8 +1,10 @@
 package com.example.models;
 
+import java.util.Optional;
+
 public class StockItem {
 
-    public static final String FILENAME = "stock_items.txt";
+    public static final String FILENAME = "data/stock_items.txt";
 
     private Product product;
     private int size;
@@ -36,6 +38,34 @@ public class StockItem {
 
     @Override
     public String toString() {
-        return String.format("%s,%d", product.getId(), size);
+        return String.format("%s,%s,%d,", stock.getId(), product.getId(), size);
+    }
+
+    public static StockItem fromString(String stockItemsString, Stock stock) {
+
+        String[] parts = stockItemsString.split(",");
+
+        if (parts.length == 3) {
+
+            try {
+
+                String productId = parts[1];
+                int size = Integer.parseInt(parts[2]);
+
+                Optional<Product> maybeProduct = Catalogue.getProducts().parallelStream().filter(product -> product.id.equals(productId)).findFirst();
+
+                if (maybeProduct.isPresent()) {
+                    return new StockItem(maybeProduct.get(), size, stock);
+                }
+
+
+            } catch (Exception exception) {
+                System.err.println("StockItem Error: " + exception.getLocalizedMessage());
+
+            }
+
+        }
+
+        return null;
     }
 }
