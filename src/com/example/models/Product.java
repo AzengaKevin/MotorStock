@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Product implements StockPhysicalDesc {
 
-    public static final String FILENAME = "products.txt";
+    public static final String FILENAME = "data/products.txt";
 
     protected int width, height, depth, weight;
     protected String id;
@@ -14,7 +14,7 @@ public class Product implements StockPhysicalDesc {
     protected String description;
     protected double price;
 
-    public Product(int width, int height, int depth, int weight, String id, String name, String description, String vehicleType, String model, double price) {
+    public Product(String id, String name, int width, int height, int depth, int weight, String description, double price) {
         this.width = width;
         this.height = height;
         this.depth = depth;
@@ -84,5 +84,35 @@ public class Product implements StockPhysicalDesc {
     @Override
     public String toString() {
         return String.format("%s,%s,%d,%d,%d,%d,%s,%.2f", id, name, width, height, depth, weight, description, price);
+    }
+
+    public static Product fromString(String productString) {
+
+        String[] parts = productString.split(",");
+
+        if (parts.length == 8) {
+
+            try {
+
+                String id = parts[0];
+                String name = parts[1];
+                int width = Integer.parseInt(parts[2]);
+                int height = Integer.parseInt(parts[3]);
+                int depth = Integer.parseInt(parts[4]);
+                int weight = Integer.parseInt(parts[5]);
+                String description = parts[6];
+                double price = Double.parseDouble(parts[7]);
+
+                return new Product(id, name, width, height, depth, weight, description, price);
+
+
+            } catch (NumberFormatException exception) {
+                System.err.println("Product Error: " + exception.getLocalizedMessage());
+
+            }
+
+        }
+
+        return null;
     }
 }
