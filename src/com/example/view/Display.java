@@ -19,19 +19,16 @@ import java.util.List;
 
 public class Display extends JFrame {
 
-    private int width, height;
+    private final int width;
+    private final int height;
 
-    private String title;
+    private final String title;
 
     private JMenuBar theMenuBar;
-    private JMenu fileMenu, stockMenu, actionMenu, catalogueMenu, individualsMenu;
-    private JMenuItem exitMenuItem, boughtStockMenuItem, addCatalogueItemMenuItem, showCatalogueMenuItem,
-            soldStockMenuItem, currentStockMenuItem, buyStockMenuItem, sellStockMenuItem,
-            addMenuItem, allMenuItem;
 
     private JPanel mainPanel;
 
-    private JTable productsTable, individualsTable, stockTable;
+    private JTable stockTable;
 
     public Display(int width, int height, String title) {
         this.width = width;
@@ -44,56 +41,45 @@ public class Display extends JFrame {
     private void setUpMenuBar() {
         theMenuBar = new JMenuBar();
 
-        fileMenu = new JMenu("File");
+        JMenu fileMenu = new JMenu("File");
 
-        exitMenuItem = new JMenuItem("Exit");
+        JMenuItem exitMenuItem = new JMenuItem("Exit");
         exitMenuItem.addActionListener(comp -> System.exit(0));
         fileMenu.add(exitMenuItem);
 
         theMenuBar.add(fileMenu);
 
-        catalogueMenu = new JMenu("Catalogue");
-        addCatalogueItemMenuItem = new JMenuItem("Add Item");
-        addCatalogueItemMenuItem.addActionListener(c -> {
-            new AddProductDialog(this, "Add Product");
-        });
-        catalogueMenu.add(addCatalogueItemMenuItem);
+        JMenu viewMenu = new JMenu("View");
 
-        showCatalogueMenuItem = new JMenuItem("Show Catalogue");
+        JMenuItem showCatalogueMenuItem = new JMenuItem("View Catalogue");
         showCatalogueMenuItem.addActionListener(c -> switchToProducts());
-        catalogueMenu.add(showCatalogueMenuItem);
+        viewMenu.add(showCatalogueMenuItem);
 
-        theMenuBar.add(catalogueMenu);
+        JMenuItem showIndividuals = new JMenuItem("View Individuals");
+        showIndividuals.addActionListener(comp -> switchToIndividualsTable());
+        viewMenu.add(showIndividuals);
 
-        stockMenu = new JMenu("Stock");
-        boughtStockMenuItem = new JMenuItem("Bought Stock");
-        stockMenu.add(boughtStockMenuItem);
-        soldStockMenuItem = new JMenuItem("Sold Stock");
-        stockMenu.add(soldStockMenuItem);
-        currentStockMenuItem = new JMenuItem("Current Stock");
-        stockMenu.add(currentStockMenuItem);
+        JMenuItem showStockMenuItem = new JMenuItem("View Stock");
+        showStockMenuItem.addActionListener(c -> switchToShowStock());
+        viewMenu.add(showStockMenuItem);
 
-        theMenuBar.add(stockMenu);
+        theMenuBar.add(viewMenu);
 
-        actionMenu = new JMenu("Action");
-        buyStockMenuItem = new JMenuItem("Buy Stock");
-        buyStockMenuItem.addActionListener(c -> switchToAddStock());
-        actionMenu.add(buyStockMenuItem);
-        sellStockMenuItem = new JMenuItem("Sell Stock");
-        actionMenu.add(sellStockMenuItem);
+        JMenu actionMenu = new JMenu("Action");
+
+        JMenuItem addCatalogueItemMenuItem = new JMenuItem("Add Catalogue Item");
+        addCatalogueItemMenuItem.addActionListener(c -> new AddProductDialog(this, "Add Product"));
+        actionMenu.add(addCatalogueItemMenuItem);
+
+        JMenuItem addIndividualMenuItem = new JMenuItem("Add Individual");
+        addIndividualMenuItem.addActionListener(c -> new AddIndividualDialog(this, "Add Individual"));
+        actionMenu.add(addIndividualMenuItem);
+
+        JMenuItem mutateStock = new JMenuItem("Change Stock");
+        mutateStock.addActionListener(c -> switchToAddStock());
+        actionMenu.add(mutateStock);
 
         theMenuBar.add(actionMenu);
-
-        individualsMenu = new JMenu("Individuals");
-        allMenuItem = new JMenuItem("All Individuals");
-        allMenuItem.addActionListener(comp -> switchToIndividualsTable());
-        individualsMenu.add(allMenuItem);
-
-        addMenuItem = new JMenuItem("Add Individual");
-        addMenuItem.addActionListener(c -> new AddIndividualDialog(this, "Add Individual"));
-        individualsMenu.add(addMenuItem);
-
-        theMenuBar.add(individualsMenu);
 
     }
 
@@ -145,13 +131,9 @@ public class Display extends JFrame {
 
                 stock.parallelStream()
                         .filter(stock -> stock.getId().equalsIgnoreCase(id)).findFirst()
-                        .ifPresent(stockInstance -> {
-
-                            new StockItemsDialog(Display.this, id + " stock items", stockInstance.getStockItems());
-                        });
+                        .ifPresent(stockInstance -> new StockItemsDialog(Display.this, id + " stock items", stockInstance.getStockItems()));
 
                 System.out.println("Stock ID: " + id);
-                //@TODO Launch a new dialog
             }
         });
 
@@ -192,7 +174,7 @@ public class Display extends JFrame {
         }
 
 
-        productsTable = new JTable(tableData, tableHeaders);
+        JTable productsTable = new JTable(tableData, tableHeaders);
 
         mainPanel.removeAll();
         mainPanel.setLayout(new BorderLayout());
@@ -217,7 +199,7 @@ public class Display extends JFrame {
             tableData[i][3] = individual.getGroup().toString();
         }
 
-        individualsTable = new JTable(tableData, tableHeaders);
+        JTable individualsTable = new JTable(tableData, tableHeaders);
 
         mainPanel.removeAll();
         mainPanel.setLayout(new BorderLayout());
