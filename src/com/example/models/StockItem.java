@@ -38,7 +38,7 @@ public class StockItem {
 
     @Override
     public String toString() {
-        return String.format("%s,%s,%d,", stock.getId(), product.getId(), size);
+        return String.format("%s,%s,%d", stock.getId(), product.getId(), size);
     }
 
     public static StockItem fromString(String stockItemsString, Stock stock) {
