@@ -8,6 +8,8 @@ public class Product implements StockPhysicalDesc {
 
     public static final String FILENAME = "data/products.txt";
 
+    public static int productCount = 0;
+
     protected int width, height, depth, weight;
     protected String id;
     protected String name;
@@ -23,6 +25,8 @@ public class Product implements StockPhysicalDesc {
         this.name = name;
         this.description = description;
         this.price = price;
+
+        Product.productCount++;
     }
 
     public String getId() {

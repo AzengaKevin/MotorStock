@@ -50,7 +50,7 @@ public class MotorFactorApplication {
     }
 
     private void initFrame() {
-        display = new Display(width, height, title, this);
+        display = new Display(width, height, title);
     }
 
 
