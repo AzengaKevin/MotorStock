@@ -39,13 +39,16 @@ public class FileHandler {
 
         createFileIfNotThere(file);
 
-        PrintWriter printWriter = new PrintWriter(
+        try (PrintWriter printWriter = new PrintWriter(
                 new BufferedWriter(
                         new FileWriter(fileName, true)
                 )
-        );
+        )) {
+            printWriter.println("\n");
+            printWriter.println(text);
+        }
 
-        printWriter.println(text);
+
     }
 
     public static void createFileIfNotThere(File file) throws IOException {

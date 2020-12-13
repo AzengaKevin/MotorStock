@@ -48,7 +48,7 @@ public class MotorFactorApplication {
     }
 
 
-    private static void loadIndividuals() {
+    public static void loadIndividuals() {
 
         INDIVIDUALS.clear();
 

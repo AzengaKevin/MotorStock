@@ -4,6 +4,7 @@ import com.example.MotorFactorApplication;
 import com.example.models.Catalogue;
 import com.example.models.Individual;
 import com.example.models.Product;
+import com.example.view.components.AddIndividualDialog;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,7 +22,7 @@ public class Display extends JFrame {
     private JMenu fileMenu, stockMenu, actionMenu, catalogueMenu, individualsMenu;
     private JMenuItem exitMenuItem, boughtStockMenuItem, addCatalogueItemMenuItem, showCatalogueMenuItem,
             soldStockMenuItem, currentStockMenuItem, buyStockMenuItem, sellStockMenuItem,
-            suppliersMenuItem, customerMenuItem, allMenuItem;
+            addMenuItem, allMenuItem;
 
     private JPanel mainPanel;
 
@@ -34,61 +35,6 @@ public class Display extends JFrame {
         this.motorFactorApplication = motorFactorApplication;
 
         createFrame();
-    }
-
-    private void switchToProducts() {
-
-        List<Product> products = new ArrayList<>(Catalogue.getProducts());
-
-        String[] tableHeaders = {"ID", "Name", "Width", "Height", "Depth", "Weight", "Price"};
-
-        Object[][] tableData = new Object[products.size()][tableHeaders.length];
-
-        for (int i = 0; i < products.size(); i++) {
-            Product product = products.get(i);
-            tableData[i][0] = product.getId();
-            tableData[i][1] = product.getName();
-            tableData[i][2] = product.getX();
-            tableData[i][3] = product.getY();
-            tableData[i][4] = product.getZ();
-            tableData[i][5] = product.getWeight();
-            tableData[i][6] = product.getPrice();
-        }
-
-
-        productsTable = new JTable(tableData, tableHeaders);
-
-        mainPanel.removeAll();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(productsTable, BorderLayout.CENTER);
-        mainPanel.repaint();
-
-    }
-
-    private void switchToIndividualsTable() {
-
-        List<Individual> individuals = MotorFactorApplication.getIndividuals();
-
-        String[] tableHeaders = {"ID", "Name", "Contact", "Group"};
-
-        Object[][] tableData = new Object[individuals.size()][tableHeaders.length];
-
-        for (int i = 0; i < individuals.size(); i++) {
-            Individual individual = individuals.get(i);
-            tableData[i][0] = individual.getId();
-            tableData[i][1] = individual.getName();
-            tableData[i][2] = individual.getContact();
-            tableData[i][3] = individual.getGroup().toString();
-        }
-
-        individualsTable = new JTable(tableData, tableHeaders);
-
-        mainPanel.removeAll();
-        mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(individualsTable, BorderLayout.CENTER);
-
-        mainPanel.repaint();
-
     }
 
     private void setUpMenuBar() {
@@ -132,8 +78,12 @@ public class Display extends JFrame {
 
         individualsMenu = new JMenu("Individuals");
         allMenuItem = new JMenuItem("All Individuals");
-        allMenuItem.addActionListener(comp -> switchToProducts());
+        allMenuItem.addActionListener(comp -> switchToIndividualsTable());
         individualsMenu.add(allMenuItem);
+
+        addMenuItem = new JMenuItem("Add Individual");
+        addMenuItem.addActionListener(c -> new AddIndividualDialog(this, "Add Individual"));
+        individualsMenu.add(addMenuItem);
 
         theMenuBar.add(individualsMenu);
 
@@ -151,14 +101,71 @@ public class Display extends JFrame {
         setLayout(new BorderLayout());
         add(mainPanel, BorderLayout.CENTER);
 
-        switchToIndividualsTable();
-        switchToProducts();
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
         setLocationRelativeTo(null);
 
         setVisible(true);
+    }
+
+    private void switchToStockTable() {
+
+    }
+
+
+    private void switchToProducts() {
+
+        List<Product> products = new ArrayList<>(Catalogue.getProducts());
+
+        String[] tableHeaders = {"ID", "Name", "Width", "Height", "Depth", "Weight", "Price"};
+
+        Object[][] tableData = new Object[products.size()][tableHeaders.length];
+
+        for (int i = 0; i < products.size(); i++) {
+            Product product = products.get(i);
+            tableData[i][0] = product.getId();
+            tableData[i][1] = product.getName();
+            tableData[i][2] = product.getX();
+            tableData[i][3] = product.getY();
+            tableData[i][4] = product.getZ();
+            tableData[i][5] = product.getWeight();
+            tableData[i][6] = product.getPrice();
+        }
+
+
+        productsTable = new JTable(tableData, tableHeaders);
+
+        mainPanel.removeAll();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(new JScrollPane(productsTable), BorderLayout.CENTER);
+        mainPanel.updateUI();
+
+    }
+
+    private void switchToIndividualsTable() {
+
+        List<Individual> individuals = MotorFactorApplication.getIndividuals();
+
+        String[] tableHeaders = {"ID", "Name", "Contact", "Group"};
+
+        Object[][] tableData = new Object[individuals.size()][tableHeaders.length];
+
+        for (int i = 0; i < individuals.size(); i++) {
+            Individual individual = individuals.get(i);
+            tableData[i][0] = individual.getId();
+            tableData[i][1] = individual.getName();
+            tableData[i][2] = individual.getContact();
+            tableData[i][3] = individual.getGroup().toString();
+        }
+
+        individualsTable = new JTable(tableData, tableHeaders);
+
+        mainPanel.removeAll();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(new JScrollPane(individualsTable), BorderLayout.CENTER);
+
+        mainPanel.updateUI();
+
     }
 
     public int getWidth() {
