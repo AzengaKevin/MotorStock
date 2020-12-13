@@ -44,7 +44,6 @@ public class FileHandler {
                         new FileWriter(fileName, true)
                 )
         )) {
-            printWriter.println("\n");
             printWriter.println(text);
         }
 

@@ -5,6 +5,7 @@ import com.example.models.Catalogue;
 import com.example.models.Individual;
 import com.example.models.Product;
 import com.example.view.components.AddIndividualDialog;
+import com.example.view.components.AddStockPanel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -70,6 +71,7 @@ public class Display extends JFrame {
 
         actionMenu = new JMenu("Action");
         buyStockMenuItem = new JMenuItem("Buy Stock");
+        buyStockMenuItem.addActionListener(c -> switchToAddStock());
         actionMenu.add(buyStockMenuItem);
         sellStockMenuItem = new JMenuItem("Sell Stock");
         actionMenu.add(sellStockMenuItem);
@@ -110,6 +112,14 @@ public class Display extends JFrame {
 
     private void switchToStockTable() {
 
+    }
+
+
+    private void switchToAddStock() {
+        mainPanel.removeAll();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.add(new AddStockPanel(), BorderLayout.CENTER);
+        mainPanel.updateUI();
     }
 
 
