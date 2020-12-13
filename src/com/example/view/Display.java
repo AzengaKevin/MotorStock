@@ -6,6 +6,7 @@ import com.example.models.Individual;
 import com.example.models.Product;
 import com.example.models.Stock;
 import com.example.view.components.AddIndividualDialog;
+import com.example.view.components.AddProductDialog;
 import com.example.view.components.AddStockPanel;
 import com.example.view.components.StockItemsDialog;
 
@@ -21,7 +22,6 @@ public class Display extends JFrame {
     private int width, height;
 
     private String title;
-    private MotorFactorApplication motorFactorApplication;
 
     private JMenuBar theMenuBar;
     private JMenu fileMenu, stockMenu, actionMenu, catalogueMenu, individualsMenu;
@@ -33,11 +33,10 @@ public class Display extends JFrame {
 
     private JTable productsTable, individualsTable, stockTable;
 
-    public Display(int width, int height, String title, MotorFactorApplication motorFactorApplication) {
+    public Display(int width, int height, String title) {
         this.width = width;
         this.height = height;
         this.title = title;
-        this.motorFactorApplication = motorFactorApplication;
 
         createFrame();
     }
@@ -55,6 +54,9 @@ public class Display extends JFrame {
 
         catalogueMenu = new JMenu("Catalogue");
         addCatalogueItemMenuItem = new JMenuItem("Add Item");
+        addCatalogueItemMenuItem.addActionListener(c -> {
+            new AddProductDialog(this, "Add Product");
+        });
         catalogueMenu.add(addCatalogueItemMenuItem);
 
         showCatalogueMenuItem = new JMenuItem("Show Catalogue");
