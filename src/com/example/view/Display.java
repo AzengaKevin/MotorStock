@@ -7,10 +7,10 @@ import com.example.models.Product;
 import com.example.models.Stock;
 import com.example.view.components.AddIndividualDialog;
 import com.example.view.components.AddStockPanel;
-import com.example.view.components.StockListItem;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,7 +103,7 @@ public class Display extends JFrame {
 
         mainPanel = new JPanel();
         setLayout(new BorderLayout());
-        switchToStockList();
+        switchToShowStock();
         add(mainPanel, BorderLayout.CENTER);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -113,16 +113,29 @@ public class Display extends JFrame {
         setVisible(true);
     }
 
-    private void switchToStockList() {
+    private void switchToShowStock() {
+
+        List<Stock> stock = MotorFactorApplication.getStock();
+
+        String[] tableHeaders = {"ID", "Individual", "Stock Type", "Date", "Item Count"};
+
+        Object[][] tableData = new Object[stock.size()][tableHeaders.length];
+
+        for (int i = 0; i < stock.size(); i++) {
+            Stock stockItem = stock.get(i);
+            tableData[i][0] = stockItem.getId();
+            tableData[i][1] = stockItem.getIndividual().getName();
+            tableData[i][2] = stockItem.getStockType().toString();
+            tableData[i][3] = stockItem.getTransactionTime().format(DateTimeFormatter.BASIC_ISO_DATE);
+            tableData[i][4] = stockItem.getStockItems().size();
+        }
+
+
+        stockTable = new JTable(tableData, tableHeaders);
+
         mainPanel.removeAll();
         mainPanel.setLayout(new BorderLayout());
-
-        JList<Stock> stockJList = new JList<>(MotorFactorApplication.getStock().toArray(new Stock[]{}));
-        StockListItem item = new StockListItem();
-        //item.setPreferredSize(new Dimension(800, 50));
-        stockJList.setCellRenderer(item);
-
-        mainPanel.add(new JScrollPane(stockJList), BorderLayout.CENTER);
+        mainPanel.add(new JScrollPane(stockTable), BorderLayout.CENTER);
         mainPanel.updateUI();
     }
 

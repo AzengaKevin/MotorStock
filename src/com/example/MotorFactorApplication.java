@@ -3,12 +3,14 @@ package com.example;
 import com.example.models.Catalogue;
 import com.example.models.Individual;
 import com.example.models.Stock;
+import com.example.models.StockItem;
 import com.example.utils.FileHandler;
 import com.example.view.Display;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -80,10 +82,19 @@ public class MotorFactorApplication {
         try {
 
             List<String> stockStrItemList = FileHandler.getFileContent(Stock.FILENAME);
+            List<String> stockItemsStsList = FileHandler.getFileContent(StockItem.FILENAME);
 
             stockStrItemList.stream().map(String::trim)
                     .filter(parts -> parts.split(",").length == 4)
-                    .map(Stock::fromString).forEach(STOCK::add);
+                    .map(Stock::fromString).filter(Objects::nonNull).forEach(stock -> {
+
+                stockItemsStsList.parallelStream()
+                        .filter(stockItemPart -> stockItemPart.split(",")[0].equalsIgnoreCase(stock.getId()))
+                        .map(part -> StockItem.fromString(part, stock))
+                        .forEach(stock::addStockItem);
+
+                STOCK.add(stock);
+            });
 
             Logger.getLogger(TAG).log(Level.INFO, "Stock Items count: " + STOCK.size());
 
