@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.models.Catalogue;
 import com.example.models.Individual;
+import com.example.models.Stock;
 import com.example.utils.FileHandler;
 import com.example.view.Display;
 
@@ -22,6 +23,7 @@ public class MotorFactorApplication {
     private Display display;
 
     private static final List<Individual> INDIVIDUALS = new ArrayList<>();
+    private static final List<Stock> STOCK = new ArrayList<>();
 
     public MotorFactorApplication(int width, int height, String title) {
 
@@ -32,6 +34,8 @@ public class MotorFactorApplication {
         loadProducts();
 
         MotorFactorApplication.loadIndividuals();
+
+        MotorFactorApplication.loadStock();
 
         initFrame();
 
@@ -68,7 +72,31 @@ public class MotorFactorApplication {
         }
     }
 
+    public static void loadStock() {
+
+        STOCK.clear();
+
+        //Check whether the file exists else create one
+        try {
+
+            List<String> stockStrItemList = FileHandler.getFileContent(Stock.FILENAME);
+
+            stockStrItemList.stream().map(String::trim)
+                    .filter(parts -> parts.split(",").length == 4)
+                    .map(Stock::fromString).forEach(STOCK::add);
+
+            Logger.getLogger(TAG).log(Level.INFO, "Stock Items count: " + STOCK.size());
+
+        } catch (IOException e) {
+            System.err.println("Loading Stock Error: " + e.getLocalizedMessage());
+        }
+    }
+
     public static List<Individual> getIndividuals() {
         return INDIVIDUALS;
+    }
+
+    public static List<Stock> getStock() {
+        return STOCK;
     }
 }

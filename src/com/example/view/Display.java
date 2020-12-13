@@ -4,8 +4,10 @@ import com.example.MotorFactorApplication;
 import com.example.models.Catalogue;
 import com.example.models.Individual;
 import com.example.models.Product;
+import com.example.models.Stock;
 import com.example.view.components.AddIndividualDialog;
 import com.example.view.components.AddStockPanel;
+import com.example.view.components.StockListItem;
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,6 +103,7 @@ public class Display extends JFrame {
 
         mainPanel = new JPanel();
         setLayout(new BorderLayout());
+        switchToStockList();
         add(mainPanel, BorderLayout.CENTER);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -110,8 +113,17 @@ public class Display extends JFrame {
         setVisible(true);
     }
 
-    private void switchToStockTable() {
+    private void switchToStockList() {
+        mainPanel.removeAll();
+        mainPanel.setLayout(new BorderLayout());
 
+        JList<Stock> stockJList = new JList<>(MotorFactorApplication.getStock().toArray(new Stock[]{}));
+        StockListItem item = new StockListItem();
+        //item.setPreferredSize(new Dimension(800, 50));
+        stockJList.setCellRenderer(item);
+
+        mainPanel.add(new JScrollPane(stockJList), BorderLayout.CENTER);
+        mainPanel.updateUI();
     }
 
 

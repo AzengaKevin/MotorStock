@@ -1,5 +1,7 @@
 package com.example.models;
 
+import com.example.MotorFactorApplication;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -95,11 +97,16 @@ public class Stock {
 
                 String id = parts[0];
                 Type type = Type.fromString(parts[1]);
-                int size = Integer.parseInt(parts[2]);
+                String individualId = parts[2];
                 LocalDateTime transactionTime = LocalDateTime.from(LocalDateTime.parse(parts[3], DateTimeFormatter.ISO_DATE_TIME));
 
+                Optional<Individual> maybeIndividual = MotorFactorApplication.getIndividuals().parallelStream()
+                        .filter(individual -> individual.getId().equalsIgnoreCase(individualId))
+                        .findFirst();
 
-                return new Stock(id, transactionTime, type, null);
+                if (maybeIndividual.isPresent()) {
+                    return new Stock(id, transactionTime, type, maybeIndividual.get());
+                }
 
 
             } catch (Exception exception) {
