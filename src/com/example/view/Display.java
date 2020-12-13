@@ -7,9 +7,11 @@ import com.example.models.Product;
 import com.example.models.Stock;
 import com.example.view.components.AddIndividualDialog;
 import com.example.view.components.AddStockPanel;
+import com.example.view.components.StockItemsDialog;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -130,8 +132,28 @@ public class Display extends JFrame {
             tableData[i][4] = stockItem.getStockItems().size();
         }
 
-
         stockTable = new JTable(tableData, tableHeaders);
+
+        JPopupMenu popupMenu = new JPopupMenu("Table Actions");
+
+        popupMenu.add(new AbstractAction("Stock Items") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String id = stockTable.getValueAt(stockTable.getSelectedRow(), 0).toString();
+
+                stock.parallelStream()
+                        .filter(stock -> stock.getId().equalsIgnoreCase(id)).findFirst()
+                        .ifPresent(stockInstance -> {
+
+                            new StockItemsDialog(Display.this, id + " stock items", stockInstance.getStockItems());
+                        });
+
+                System.out.println("Stock ID: " + id);
+                //@TODO Launch a new dialog
+            }
+        });
+
+        stockTable.setComponentPopupMenu(popupMenu);
 
         mainPanel.removeAll();
         mainPanel.setLayout(new BorderLayout());
